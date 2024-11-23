@@ -26,6 +26,8 @@ const initialState = {
   secondsRemaining: null,
 };
 
+console.log(initialState);
+
 function reducer(state, action) {
   switch (action.type) {
     case "dataReceived":
@@ -98,11 +100,24 @@ export default function App() {
     0
   );
 
-  useEffect(function () {
-    fetch(`http://localhost:9000/questions`)
+  // useEffect(function () {
+  //   fetch(`http://localhost:9000/questions`
+
+  //     .then((res) => res.json())
+  //     .then((data) => dispatch({ type: "dataReceived", payload: data }))
+  //     .catch((err) => dispatch({ type: "dataFailed" }));
+  // }, []);
+
+  useEffect(() => {
+    fetch("/api/get-questions") // Ensure the correct URL (relative to the server)
       .then((res) => res.json())
-      .then((data) => dispatch({ type: "dataReceived", payload: data }))
-      .catch((err) => dispatch({ type: "dataFailed" }));
+      .then((data) => {
+        dispatch({ type: "dataReceived", payload: data.questions });
+      })
+      .catch((err) => {
+        dispatch({ type: "dataFailed" });
+        console.error("Error fetching questions:", err);
+      });
   }, []);
 
   return (
